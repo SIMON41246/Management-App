@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "19298019223",
+    "project_id": "byadiproject",
+    "storage_bucket": "byadiproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:19298019223:android:6aa84976acf4029f45c6d2",
+        "android_client_info": {
+          "package_name": "com.example.byadiproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "19298019223-09t43a16g3u7r6uv4pil6mb9klvre2aa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfaCuuGjTibgudLbpelnoy0EFICFWMvwU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "19298019223-09t43a16g3u7r6uv4pil6mb9klvre2aa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
