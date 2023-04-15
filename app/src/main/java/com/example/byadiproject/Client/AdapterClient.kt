@@ -4,15 +4,18 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.byadiproject.R
 
 class AdapterClient(
     private val context: Context,
-    private var list: ArrayList<Client>,
+    private var list: List<Client>,
     private val command: Command,
-    private val paymentInterface: payment_interface
+    private val paymentInterface: payment_interface,
+    val delete: delete_interface
 ) : RecyclerView.Adapter<AdapterClient.MyviewHolder>() {
     private var filteredList: List<Client> = list
 
@@ -23,6 +26,7 @@ class AdapterClient(
         val commander = view.findViewById<TextView>(R.id.commander)
         val payé = view.findViewById<TextView>(R.id.Payé)
         val total = view.findViewById<TextView>(R.id.total)
+        val btndelete = view.findViewById<ImageView>(R.id.deletebutton)
 
     }
 
@@ -43,6 +47,9 @@ class AdapterClient(
         }
         holder.payé.setOnClickListener {
             paymentInterface.payment(list[holder.adapterPosition])
+        }
+        holder.btndelete.setOnClickListener {
+            delete.delete(list[holder.adapterPosition])
         }
 
 
@@ -70,14 +77,18 @@ class AdapterClient(
         fun payment(client: Client)
     }
 
+    interface delete_interface {
+        fun delete(client: Client)
+    }
+
 
     // slide the view from its current position to below itself
 
 
-
-    fun setItems(newItems: ArrayList<Client>) {
+    fun setItems(newItems: List<Client>) {
+        val diffresults = DiffUtil.calculateDiff(ClientDiffUtil(list, newItems))
         list = newItems
-        notifyDataSetChanged()
+        diffresults.dispatchUpdatesTo(this)
     }
 
 

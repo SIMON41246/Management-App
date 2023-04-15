@@ -26,7 +26,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), AdapterClient.Command, AdapterClient.payment_interface {
+class MainActivity : AppCompatActivity(), AdapterClient.Command, AdapterClient.payment_interface,
+    AdapterClient.delete_interface {
     private var adapter: AdapterClient? = null
 
     private val fireBase = Firebase.database
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity(), AdapterClient.Command, AdapterClient.p
         binding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        val myAdapter = AdapterClient(this, list, this, this)
+        val myAdapter = AdapterClient(this, list, this, this, this)
         binding.searchb.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 return true
@@ -64,7 +65,13 @@ class MainActivity : AppCompatActivity(), AdapterClient.Command, AdapterClient.p
 
                 }
                 val adapter =
-                    AdapterClient(this@MainActivity, list, this@MainActivity, this@MainActivity)
+                    AdapterClient(
+                        this@MainActivity,
+                        list,
+                        this@MainActivity,
+                        this@MainActivity,
+                        this@MainActivity
+                    )
                 binding.myrecycle.adapter = adapter
 
             }
@@ -165,7 +172,7 @@ class MainActivity : AppCompatActivity(), AdapterClient.Command, AdapterClient.p
 
     private fun setUpRecyclerView() {
 
-        adapter = AdapterClient(this@MainActivity, list, this@MainActivity, this@MainActivity)
+        adapter = AdapterClient(this@MainActivity, list, this@MainActivity, this@MainActivity, this)
 
     }
 
@@ -199,8 +206,14 @@ class MainActivity : AppCompatActivity(), AdapterClient.Command, AdapterClient.p
                 Deal.add(item)
             }
         }
-        val adpter = AdapterClient(this, Deal, this, this)
+        val adpter = AdapterClient(this, Deal, this, this, this)
         binding.myrecycle.adapter = adpter
+    }
+
+    override fun delete(client: Client) {
+        fireBase.getReference("Client").child(client.id).removeValue()
+        adapter?.setItems(list)
+
     }
 
 
