@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.byadiproject.R
+import com.example.byadiproject.databinding.ItemBinding
 
 class AdapterClient(
     private val context: Context,
@@ -16,10 +17,10 @@ class AdapterClient(
     private val command: Command,
     private val paymentInterface: payment_interface,
     val delete: delete_interface
-) : RecyclerView.Adapter<AdapterClient.MyviewHolder>() {
+) : RecyclerView.Adapter<AdapterClient.BaseViewHolder>() {
     private var filteredList: List<Client> = list
 
-    class MyviewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class MyviewHolder(view: View) : BaseViewHolder(view) {
         val name = view.findViewById<TextView>(R.id.name_view)
         val price = view.findViewById<TextView>(R.id.price_view)
         val tele = view.findViewById<TextView>(R.id.tele_view)
@@ -30,26 +31,63 @@ class AdapterClient(
 
     }
 
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyviewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.view_client, parent, false)
-        return MyviewHolder(view)
+    override fun getItemViewType(position: Int): Int {
+        if (position == 0) {
+            return VIEW_TYPE_HEADER
+        } else {
+            return VIEW_TYPE_CLIENT
+        }
     }
 
-    override fun onBindViewHolder(holder: MyviewHolder, position: Int) {
-        holder.name.text = "Nom :\t${list[holder.adapterPosition].name}"
-        holder.price.text = "Prix :\t${list[holder.adapterPosition].price} DH"
-        holder.tele.text = "Tele :212\t${list[holder.adapterPosition].tele}"
-        holder.total.text = "total :\t${list[holder.adapterPosition].total}DH"
+    companion object {
+        const val VIEW_TYPE_HEADER = 11
+        const val VIEW_TYPE_CLIENT = 12
+    }
 
-        holder.commander.setOnClickListener {
-            command.like(list[holder.adapterPosition])
+    abstract class BaseViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+    class newViewHolder(view: View) : BaseViewHolder(view) {
+        val binding = ItemBinding.bind(view)
+    }
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
+        when (viewType) {
+            VIEW_TYPE_HEADER -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.item, parent, false)
+                return newViewHolder(view)
+            }
+            VIEW_TYPE_CLIENT -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.view_client, parent, false)
+                return MyviewHolder(view)
+
+            }
         }
-        holder.payé.setOnClickListener {
-            paymentInterface.payment(list[holder.adapterPosition])
-        }
-        holder.btndelete.setOnClickListener {
-            delete.delete(list[holder.adapterPosition])
+        return super.createViewHolder(parent, viewType)
+
+    }
+
+    override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
+        when (holder) {
+            is MyviewHolder -> {
+                holder.name.text = "Nom :\t${list[holder.adapterPosition].name}"
+                holder.price.text = "Prix :\t${list[holder.adapterPosition].price} DH"
+                holder.tele.text = "Tele :212\t${list[holder.adapterPosition].tele}"
+                holder.total.text = "total :\t${list[holder.adapterPosition].total}DH"
+
+                holder.commander.setOnClickListener {
+                    command.like(list[holder.adapterPosition])
+                }
+                holder.payé.setOnClickListener {
+                    paymentInterface.payment(list[holder.adapterPosition])
+                }
+                holder.btndelete.setOnClickListener {
+                    delete.delete(list[holder.adapterPosition])
+                }
+            }
+            is newViewHolder -> {
+
+            }
         }
 
 
